@@ -3,7 +3,11 @@ name = "tarsum"
 version = "0.1.0"
 authors = ["Chris Moore"]
 edition = "2018"
-description = "a command line tool to get file hashes of files within archives, without writing files to disk first."
+description = "a command line tool to get file hashes of files within archives, without extracting files to disk first."
+keywords = [ "checksums", "hash", "archive", "tar", "zip" ]
+categories = [ "command-line-utilities", "filesystem" ]
+license = "MIT"
+repository = "https://github.com/csm123199/tarsum"
 
 exclude = [ "test_data" ]
 
