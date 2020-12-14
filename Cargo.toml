@@ -5,6 +5,8 @@ authors = ["Chris Moore"]
 edition = "2018"
 description = "a command line tool to get file hashes of files within archives, without writing files to disk first."
 
+exclude = [ "test_data" ]
+
 [dependencies]
 clap = "3.0.0-beta.2"
 
