@@ -1,5 +1,5 @@
 # tarsum
-Reads an archive file and prints the contained file's hashes
+Reads an archive file and prints hashes of the files within it.
 
 Supports file hashes that are supported by the [checksums](https://crates.io/crates/checksums) crate.
 
@@ -9,7 +9,11 @@ Currently supported archive formats:
 * tar.gz
 * tar.xz
 * tar.bz2
-* PRs for more types are welcome!
+* PRs for more formats are welcome!
+
+### Todo:
+* more archive types
+* provide JSON/? output for easier more readable machine output
 
 Current help text:
 ```
@@ -54,4 +58,18 @@ Supported hash algorithms: (from the `checksums` rust crate, https://crates.io/c
     crc64, crc32, crc32c, crc16, crc8,
     md5, md6-128, md6-256, md6-512
     xor8
+```
+
+Example output:
+```
+tarsum$ tarsum ./test_data/root.tar
+a/aa/f.txt 75FFCBE62A0C6E7C5E770A55BBA54C67
+a/aa/g.txt 576248B3F051506BB5316CBAA90A0778
+a/bb/h.txt C14E72CEE3A122DEE5B64D73EFD91B19
+a/d.txt A91067CFE85BA92E6D9FD5538CD75117
+a/e.txt CD12B29773CF3BFB72C2F6DDBF7AD0EC
+a.txt 5E70D8E77DAF4B3E0CEB05E0868C6530
+b/aa/i.txt 24F5874A3F293722FCD9FDFCDB967382
+b.txt 2284615785EAAC08938CE4B1EAFF0E1E
+c.txt 5C08CE6C57F9957003246E92D07D03D4
 ```
