@@ -1,0 +1,19 @@
+[package]
+name = "tarsum"
+version = "0.1.0"
+authors = ["Chris Moore"]
+edition = "2018"
+description = "a command line tool to get file hashes of files within archives, without writing files to disk first."
+
+[dependencies]
+clap = "3.0.0-beta.2"
+
+regex = "1.4.2"
+ring = "0.16.19"
+checksums = "0.7.0"
+
+tar = "0.4.30"
+flate2 = "1.0.14"
+xz2 = "0.1.6"
+bzip2 = "0.4.1"
+zip = "0.5.9"
