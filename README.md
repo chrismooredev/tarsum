@@ -11,7 +11,7 @@ Currently supported archive formats:
 * tar.bz2
 * PRs for more types are welcome!
 
-Current help test:
+Current help text:
 ```
 USAGE:
     tarsum [FLAGS] [OPTIONS] [target]
