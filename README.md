@@ -13,6 +13,7 @@ Currently supported archive formats:
 
 ### Todo:
 * more archive types
+* tests
 * provide JSON/? output for easier more readable machine output
 
 Current help text:

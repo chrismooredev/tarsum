@@ -1,6 +1,6 @@
 [package]
 name = "tarsum"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Chris Moore"]
 edition = "2018"
 description = "a command line tool to get file hashes of files within archives, without extracting files to disk first."
