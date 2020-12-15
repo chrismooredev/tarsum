@@ -27,17 +27,26 @@ const HELP_SUFFIX: &'static str =
 #[derive(Clap)]
 #[clap(version = "1.0", author = "Chris Moore", about = clap::crate_description!(), after_long_help = HELP_SUFFIX)]
 pub struct Opts {
-    #[clap(short, long, about = "Outputs and hashes only matching filenames")]
+    /// Outputs and hashes only matching filenames
+    #[clap(short, long)]
     regex: Option<Regex>,
-    #[clap(short, long, default_value = "MD5", about = "Specify the hash algorithm")]
+    /// Specify the hash algorithm
+    #[clap(short, long, default_value = "MD5")]
     hash: Algorithm,
-    #[clap(short, long, about = "Emit lowercase file hashes")]
+    /// Emit lowercase file hashes
+    #[clap(short, long)]
     lower: bool,
-    #[clap(short, long, about = "Perform C-style string escaping on filenames. Default is to force filenames to UTF8, which may be lossy.")]
+    /// Perform C-style string escaping on filenames. Default is to force filenames to UTF8, which may be lossy.
+    #[clap(short, long)]
     escaped: bool,
 
-    #[clap(short, long, about = "Read the file as a specific file format. Overrides the target's extension.")]
+    /// Read the file as a specific file format. Overrides the target's extension.
+    #[clap(short, long)]
     format: Option<FileFormat>,
+
+    /// If provided once, emits each file's size in bytes. If provided twice or more, emits in a human readable form (2.5MiB)
+    #[clap(short, long, parse(from_occurrences))]
+    size: u32,
 
     //#[clap(short = 'd', long, about = "Attempt to determine the decompression/archival format dynamically, instead of using the filename")]
     //content_detection: bool,
@@ -154,24 +163,27 @@ fn dump_archive(opts: &Opts) -> io::Result<()> {
 trait ArchiveFile: Read {
     // Note: using Vec<u8> to allow non-utf8 filenames in archives
     fn path<'a>(&'a self) -> Cow<'a, [u8]>;
+    /// Returns if the path matches the regex. Should be implemented if `path` must be allocated be returned from .path()
     fn path_matches(&self, regex: &Regex) -> bool {
         regex.is_match(self.path().as_ref())
     }
+
+    fn size(&self) -> u64;
 }
 impl ArchiveFile for ZipFile<'_> {
     fn path<'a>(&'a self) -> Cow<'a, [u8]> {
         Cow::Borrowed(self.name_raw())
     }
-    fn path_matches(&self, regex: &Regex) -> bool {
-        regex.is_match(self.name_raw())
+    fn size(&self) -> u64 {
+        ZipFile::size(self)
     }
 }
 impl<R: Read> ArchiveFile for tar::Entry<'_, R> {
     fn path<'a>(&'a self) -> Cow<'a, [u8]> {
         self.path_bytes()
     }
-    fn path_matches(&self, regex: &Regex) -> bool {
-        regex.is_match(&self.path_bytes())
+    fn size(&self) -> u64 {
+        tar::Entry::size(self)
     }
 }
 
@@ -233,7 +245,12 @@ fn print_file<F: ArchiveFile>(mut reader: &mut F, opts: &Opts) {
             String::from_utf8_lossy(&name_raw)
         };
 
-        println!("{} {}", name, hash_str);
+        match opts.size {
+            0 => println!("{} {}", name, hash_str),
+            1 => println!("{} {} {}", name, hash_str, reader.size()),
+            _ => println!("{} {} {}", name, hash_str, bytesize::ByteSize(reader.size()).to_string_as(true)),
+        }
+        
     }
 }
 

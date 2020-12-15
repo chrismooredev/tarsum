@@ -1,9 +1,9 @@
 [package]
 name = "tarsum"
-version = "0.1.1"
+version = "0.1.2"
 authors = ["Chris Moore"]
 edition = "2018"
-description = "a command line tool to get file hashes of files within archives, without extracting files to disk first."
+description = "A command line tool to get file hashes of files within archives, without extracting files to disk first."
 keywords = [ "checksum", "hash", "archive", "tar", "zip" ]
 categories = [ "command-line-utilities", "filesystem" ]
 license = "MIT"
@@ -14,8 +14,8 @@ exclude = [ "test_data" ]
 [dependencies]
 clap = "3.0.0-beta.2"
 
+bytesize = "1.0.1"
 regex = "1.4.2"
-ring = "0.16.19"
 checksums = "0.7.0"
 
 tar = "0.4.30"

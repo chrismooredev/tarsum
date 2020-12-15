@@ -30,7 +30,7 @@ ARGS:
 FLAGS:
     -e, --escaped
             Perform C-style string escaping on filenames. Default is to force filenames to UTF8,
-            which may be lossy.
+            which may be lossy
 
         --help
             Prints help information
@@ -38,13 +38,17 @@ FLAGS:
     -l, --lower
             Emit lowercase file hashes
 
+    -s, --size
+            If provided once, emits each file's size in bytes. If provided twice or more, emits in a
+            human readable form (2.5MiB)
+
     -V, --version
             Prints version information
 
 
 OPTIONS:
     -f, --format <format>
-            Read the file as a specific file format. Overrides the target's extension.
+            Read the file as a specific file format. Overrides the target's extension
 
     -h, --hash <hash>
             Specify the hash algorithm [default: MD5]
