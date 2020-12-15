@@ -1,4 +1,6 @@
 # tarsum
+[![crates.io](https://img.shields.io/crates/v/tarsum.svg)](https://crates.io/crates/tarsum) [![docs.rs](https://docs.rs/tarsum/badge.svg)](https://docs.rs/crate/tarsum/0.1.1)
+
 Reads an archive file and prints hashes of the files within it.
 
 Supports file hashes that are supported by the [checksums](https://crates.io/crates/checksums) crate.
