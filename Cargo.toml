@@ -7,7 +7,7 @@ description = "A command line tool to get file hashes of files within archives, 
 keywords = [ "checksum", "hash", "archive", "tar", "zip" ]
 categories = [ "command-line-utilities", "filesystem" ]
 license = "MIT"
-repository = "https://github.com/csm123199/tarsum"
+repository = "https://github.com/chrismooredev/tarsum"
 
 exclude = [ "test_data" ]
 
