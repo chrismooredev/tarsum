@@ -114,7 +114,7 @@ impl std::str::FromStr for FileFormat {
         use FileFormat::*;
         
         Ok(match s.trim().to_lowercase().as_ref() {
-            "zip" => Zip,
+            "zip" | "jar" => Zip,
             "tar" => Tar,
             "tar.gz" => TarGz,
             "tar.xz" => TarXz,
