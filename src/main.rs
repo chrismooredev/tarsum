@@ -25,7 +25,7 @@ const HELP_SUFFIX: &'static str =
 ";
 
 #[derive(Clap)]
-#[clap(version = "1.0", author = "Chris Moore", about = clap::crate_description!(), after_long_help = HELP_SUFFIX)]
+#[clap(version = clap::crate_version!(), author = "Chris Moore", about = clap::crate_description!(), after_long_help = HELP_SUFFIX)]
 pub struct Opts {
     #[clap(short, long, about = "Outputs and hashes only matching filenames")]
     regex: Option<Regex>,
