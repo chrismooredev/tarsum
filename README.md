@@ -6,7 +6,7 @@ Reads an archive file and prints hashes of the files within it.
 Supports file hashes that are supported by the [checksums](https://crates.io/crates/checksums) crate.
 
 Currently supported archive formats:
-* zip
+* zip/jar
 * tar
 * tar.gz
 * tar.xz

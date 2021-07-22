@@ -1,9 +1,9 @@
 
 use std::{borrow::Cow, fs::File};
-use std::io;
-use std::io::Read;
+use std::io::{self, Read, Seek};
 use std::str::FromStr;
-use std::path::{PathBuf};
+use std::path::PathBuf;
+
 use clap::Clap;
 use checksums::{Algorithm, hash_reader};
 use regex::bytes::Regex;
@@ -94,7 +94,7 @@ impl Opts {
 }
 
 /// Terminal file containers, that contain others
-const FILE_CONTAINERS: &[&'static str] = &["zip", "tar"];
+const FILE_CONTAINERS: &[&'static str] = &["zip", "jar", "tar"];
 /// Compressed file formats, that decompress to another format
 const FILE_COMPRESSED: &[&'static str] = &["gz", "xz", "bz2"];
 
@@ -106,7 +106,7 @@ enum FileFormat {
     TarGz,
     TarXz,
     TarBz2,
-    // iso
+    // iso (ext*? ntfs? fat?) - dependant on available rust libs
 }
 impl std::str::FromStr for FileFormat {
     type Err = String;
@@ -124,7 +124,17 @@ impl std::str::FromStr for FileFormat {
     }
 }
 impl FileFormat {
-    fn dump<R: Read>(&self, reader: R, opts: &Opts) -> io::Result<()> {
+    fn dump_file<R: Read + Seek>(&self, reader: R, opts: &Opts) -> io::Result<()> {
+        use FileFormat::*;
+        match self {
+            Zip => dump::zip_seek(reader, &opts),
+            Tar => dump::tar(reader, &opts),
+            TarGz => dump::tar(GzDecoder::new(reader), &opts),
+            TarXz => dump::tar(XzDecoder::new(reader), &opts),
+            TarBz2 => dump::tar(BzDecoder::new(reader), &opts),
+        }
+    }
+    fn dump_stream<R: Read>(&self, reader: R, opts: &Opts) -> io::Result<()> {
         use FileFormat::*;
         match self {
             Zip => dump::zip(reader, &opts),
@@ -152,11 +162,11 @@ fn dump_archive(opts: &Opts) -> io::Result<()> {
     // getting the format asserts a provided file or --format flag
     if let Some(target) = &opts.target {
         let opened = File::open(target)?;
-        fmt.dump(opened, opts)
+        fmt.dump_file(opened, opts)
     } else {
         let stdin = std::io::stdin();
         let stdinl = stdin.lock();
-        fmt.dump(stdinl, opts)
+        fmt.dump_stream(stdinl, opts)
     }
 }
 
@@ -188,12 +198,24 @@ impl<R: Read> ArchiveFile for tar::Entry<'_, R> {
 }
 
 mod dump {
-    use std::io::{self, Read};
+    use std::io::{self, Read, Seek};
     use super::{Opts, print_file};
 
-    pub fn zip<R: Read>(mut reader: R, opts: &Opts) -> io::Result<()> {
-        //let mut arc = zip::ZipArchive::new(reader)?;
+
+    pub fn zip_seek<R: Read + Seek>(reader: R, opts: &Opts) -> io::Result<()> {
+        let mut zip = zip::read::ZipArchive::new(reader)?;
         
+        for i in 0..zip.len() {
+            let mut file = zip.by_index(i)?;
+            if ! file.is_dir() {
+                print_file(&mut file, opts);
+            }
+        }
+
+        Ok(())
+    }
+
+    pub fn zip<R: Read>(mut reader: R, opts: &Opts) -> io::Result<()> {
         loop {
             match zip::read::read_zipfile_from_stream(&mut reader)? {
                 None => break,
