@@ -15,11 +15,11 @@ exclude = [ "test_data" ]
 clap = "3.0.0-beta.2"
 
 bytesize = "1.0.1"
-regex = "1.4.2"
-checksums = "0.7.0"
+regex = "1.5.4"
+checksums = "0.9.0"
 
-tar = "0.4.30"
-flate2 = "1.0.14"
+tar = "0.4.35"
+flate2 = "1.0.20"
 xz2 = "0.1.6"
-bzip2 = "0.4.1"
-zip = "0.5.9"
+bzip2 = "0.4.3"
+zip = "0.5.13"
